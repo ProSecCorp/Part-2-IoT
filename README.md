@@ -1,4 +1,4 @@
-# First mid-term project: Cyber physical systems security
+# Second mid-term project: Internet of Things security
 <p align="center">
   <img alt="Group logo, stylized images of a blue shield containing a bottle of prosecco, a drone, and connected chips" src="Data/Images/logo.jpeg" width="30%">
 </p>
@@ -11,7 +11,7 @@ Cyber-Physical Systems and IoT Security (MSc ICT for Internet and Multimedia, A.
 - Filippo Bellon | XXXXXXX
 
 ## Reference paper
-[Tractor Beam: Safe-hijacking of Consumer Drones with Adaptive GPS Spoofing](./Reference-paper.pdf)
+[An Anomaly-Based IDS for Detecting Attacks in RPL-Based Internet of Things](./Reference-paper.pdf)
 
 ## Setup
 ### LaTeX
