@@ -1,6 +1,8 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{article} %article or report
 
 \input{setup}
+\input{acronyms}
+\makeglossaries
 
 \begin{document}
 
@@ -9,9 +11,20 @@
 \tableofcontents
 \clearpage
 
+\input{introduction}
+\input{background}
 \input{objectives}
-%\input{system-setup}
-%\input{experiments}
-%\input{results}
+\input{system-setup}
+\input{experiments}
+\input{results}
+
+\clearpage
+\addcontentsline{toc}{section}{Acronyms}
+\printglossary[type=\acronymtype,title=Acronyms]
+
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}
