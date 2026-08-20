@@ -1,1 +1,76 @@
 \section{Background}
+\label{sec:background}
+
+This section introduces the concepts required to understand the experimental work.
+
+\subsection{The RPL Routing Protocol}
+\label{subsec:rpl_protocol}
+
+The \gls{rpl} is a distance-vector routing protocol designed for resource-constrained \glspl{lln}. 
+\gls{rpl} organizes nodes into a \gls{dodag}, whose topology is rooted at a node providing connectivity towards an external network.
+
+\subsubsection{DODAG Construction and Topology Management}
+
+Each node in a \gls{dodag} is assigned a \textit{Rank}, which represents its position relative to the root. 
+The root has the lowest Rank, while nodes farther from the root generally have higher Rank values. 
+Rank is used to maintain the directed acyclic structure of the \gls{dodag} and to support loop avoidance.
+
+The selection of a preferred parent and the computation of the resulting Rank are determined by an \textit{\gls{of}}, which evaluates the routing cost associated with neighboring nodes. 
+Two \glspl{of} commonly associated with \gls{rpl} are:
+
+\begin{itemize}
+    \item \textbf{\gls{of0}:} primarily considers the number of hops towards the root when selecting a parent;
+    \item \textbf{\gls{mhrof}:} considers link-quality metrics such as the \gls{etx} to compute the path cost and applies hysteresis to limit unnecessary parent changes.
+\end{itemize}
+
+In the RPL implementation considered in this work, \gls{mhrof} is used for parent selection. 
+The advertised Rank of a neighbor therefore represents an important component of the routing cost considered when evaluating potential parents.
+
+\subsubsection{RPL Control Messages}
+
+\gls{rpl} uses \gls{icmpv6} control messages to construct and maintain the \gls{dodag}:
+
+\begin{itemize}
+    \item \textbf{\gls{dio}:} advertises \gls{dodag} information, including the current Rank, version, and other configuration parameters. Nodes use received DIOs to discover potential parents;
+    
+    \item \textbf{\gls{dis}:} requests \gls{dio} messages from neighboring nodes, for example when joining or recovering from a disconnected state;
+    
+    \item \textbf{\gls{dao}:} advertises routing information towards the root, allowing downward routes to be maintained;
+    
+    \item \textbf{\gls{dao-ack}:} optionally acknowledges the reception of a \gls{dao}.
+\end{itemize}
+
+Among these messages, the \gls{dio} is particularly relevant to the attacks considered in this work, since it contains the Rank advertised by a node and is therefore involved in parent selection.
+
+\subsection{Routing Attacks in RPL Networks}
+\label{subsec:routing_attacks}
+The distributed nature of \gls{rpl} allows a compromised internal node to participate in the routing protocol while providing malicious routing information. 
+Two routing attacks are considered in this project: Blackhole and Sinkhole.
+
+\subsubsection{Blackhole Attack}
+A Blackhole attack consists of a compromised routing node that discards packets that it is expected to forward instead of delivering them towards their destination. 
+The malicious node may continue to participate normally in \gls{rpl} topology formation, while disrupting data traffic that is routed through it.
+
+The attack primarily affects packet forwarding and can therefore result in packet loss and reduced network delivery performance.
+
+\subsubsection{Sinkhole Attack}
+A Sinkhole attack attempts to attract network traffic by making a compromised node appear to provide a highly favorable route towards the \gls{dodag} root. 
+In \gls{rpl}, this can be achieved by manipulating the Rank advertised in \gls{dio} messages.
+
+The attacker advertises a Rank lower than its actual Rank, causing neighboring nodes to potentially consider it a more attractive parent. 
+Once selected as a preferred parent, the malicious node can attract traffic originating from other nodes in its neighborhood.
+
+The effectiveness of the attack depends on the routing \gls{of}, link metrics, and parent-selection mechanisms. 
+In particular, the hysteresis mechanism of \gls{mhrof} can delay parent changes when the new route does not provide a sufficiently large improvement.
+
+A Sinkhole attack can also be combined with a Blackhole attack, where the Sinkhole redirects traffic towards the compromised node and the Blackhole subsequently discards it.
+
+\subsection{Intrusion Detection Systems (IDS) in IoT}
+\label{subsec:ids_background}
+\gls{ids} provide an additional layer of defense by monitoring network activity and identifying behavior that deviates from expected protocol operation.
+
+IDS approaches can be deployed directly on network nodes or at a centralized monitoring point. 
+They can also rely on different detection strategies, such as predefined protocol rules or the identification of anomalous behavior.
+
+In this work, the IDS is based on RPL routing information and focuses on identifying inconsistencies in the observed routing hierarchy. 
+In particular, Rank information advertised through \gls{dio} messages and parent relationships reported through \gls{dao} messages can be used to assess whether the resulting topology is consistent with the expected RPL hierarchy.
