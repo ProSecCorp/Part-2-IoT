@@ -1,2 +1,11 @@
 \section{Introduction}
-\lipsum[1-2]
+The \gls{iot} has evolved into a widespread paradigm connecting large numbers of resource-constrained devices and enabling the development of intelligent cyber-physical systems.
+Many \gls{iot} deployments rely on \glspl{lln}, where nodes operate under strict limitations in terms of processing power, memory, energy, and communication bandwidth.
+Technologies such as \gls{6lowpan} enable IPv6 communication in these constrained environments, while the \gls{rpl}, standardized by the \gls{ietf}, provides distributed routing and topology formation.
+
+The characteristics of \glspl{lln} and the distributed nature of \gls{rpl} introduce significant security challenges.
+In particular, compromised internal nodes can legitimately participate in the routing process while manipulating \gls{rpl} control information, making conventional security mechanisms insufficient against internal routing attacks \cite{farzaneh2019anomaly}.
+Among these attacks, Sinkhole and Blackhole attacks are particularly relevant. A Sinkhole node can advertise an artificially attractive routing metric to attract network traffic through itself, while a Blackhole node can exploit its position in the routing topology to selectively or completely discard forwarded packets.
+
+This work investigates the behavior of a \gls{rpl} network under Sinkhole and Blackhole attacks and evaluates their impact on network performance.
+In addition, a lightweight log-based \gls{ids} is developed to identify routing anomalies by monitoring \gls{rpl} control messages and detecting inconsistencies in node and parent ranks.
