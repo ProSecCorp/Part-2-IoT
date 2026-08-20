@@ -1,2 +1,12 @@
 \section{Objectives}
-\lipsum[9-12]
+\label{sec:objectives}
+The main objective of this project is to investigate the impact of routing attacks on \gls{rpl}-based \gls{iot} networks and to evaluate the feasibility of detecting such attacks through routing information.
+
+The specific objectives are:
+\begin{itemize}
+    \item \textbf{Analyze \gls{rpl} behavior:} study the construction and evolution of the \gls{dodag} under normal operating conditions;
+    \item \textbf{Evaluate routing attacks:} implement and analyze Blackhole and Sinkhole attacks and observe their effects on the routing topology and packet delivery;
+    \item \textbf{Compare network performance:} evaluate the impact of the attacks using metrics such as \gls{pdr}, End-to-End Delay, and Throughput;
+    \item \textbf{Develop a lightweight \gls{ids}:} analyze Contiki-NG execution logs to identify routing anomalies, with particular focus on inconsistencies between node and parent Rank values;
+    \item \textbf{Assess detection capability:} evaluate whether the proposed \gls{ids} can identify the routing inconsistencies introduced by a Sinkhole attack.
+\end{itemize}
