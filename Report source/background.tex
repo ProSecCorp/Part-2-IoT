@@ -20,10 +20,10 @@ Two \glspl{of} commonly associated with \gls{rpl} are:
 
 \begin{itemize}
     \item \textbf{\gls{of0}:} primarily considers the number of hops towards the root when selecting a parent;
-    \item \textbf{\gls{mhrof}:} considers link-quality metrics such as the \gls{etx} to compute the path cost and applies hysteresis to limit unnecessary parent changes.
+    \item \textbf{\gls{mrhof}:} considers link-quality metrics such as the \gls{etx} to compute the path cost and applies hysteresis to limit unnecessary parent changes.
 \end{itemize}
 
-In the RPL implementation considered in this work, \gls{mhrof} is used for parent selection. 
+In the RPL implementation considered in this work, \gls{mrhof} is used for parent selection. 
 The advertised Rank of a neighbor therefore represents an important component of the routing cost considered when evaluating potential parents.
 
 \subsubsection{RPL Control Messages}
@@ -61,7 +61,7 @@ The attacker advertises a Rank lower than its actual Rank, causing neighboring n
 Once selected as a preferred parent, the malicious node can attract traffic originating from other nodes in its neighborhood.
 
 The effectiveness of the attack depends on the routing \gls{of}, link metrics, and parent-selection mechanisms. 
-In particular, the hysteresis mechanism of \gls{mhrof} can delay parent changes when the new route does not provide a sufficiently large improvement.
+In particular, the hysteresis mechanism of \gls{mrhof} can delay parent changes when the new route does not provide a sufficiently large improvement.
 
 A Sinkhole attack can also be combined with a Blackhole attack, where the Sinkhole redirects traffic towards the compromised node and the Blackhole subsequently discards it.
 

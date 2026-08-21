@@ -1,2 +1,189 @@
 \section{System setup}
-\lipsum[1-2]
+\subsection{Experimental environment}
+\label{subsec:experimental_environment}
+
+We deployed the experimental environment on a Windows 10 host using \gls{wsl2}. 
+We used an Ubuntu Linux environment to build and execute the Contiki-NG source code and its simulation tools.
+
+We simulated the \gls{rpl} network using Cooja, the network simulator included with Contiki-NG. 
+Cooja allowed us to execute multiple Contiki-NG motes simultaneously while providing access to their network activity and execution logs.
+
+To run the graphical Cooja interface through \gls{wsl2}, we configured the display variable before launching the simulator:
+\begin{verbatim}
+export DISPLAY=:0
+\end{verbatim}
+
+We then started the simulator from the Contiki-NG directory using:
+\begin{verbatim}
+cd tools/cooja
+./gradlew run
+\end{verbatim}
+
+We used the \texttt{RPL-UDP} example as the basis for our experiments. 
+We created custom Cooja simulation configurations to define the network topology, participating motes, and attack scenarios. 
+The simulations produced mote execution logs, which we subsequently analyzed to evaluate network performance and detect routing anomalies.
+
+\subsection{Implementation modifications}
+\label{subsec:implementation_modifications}
+To implement the two attacks considered in our experiments, we modified selected components of the Contiki-NG networking and \gls{rpl} stack.
+The modifications were kept localized to the routing and forwarding mechanisms, while the normal application and \gls{rpl} behavior was preserved whenever possible.
+You can find the complete source code of the modified Contiki-NG files in the \texttt{Source/Contiki patches} directory of the accompanying repository.
+
+\subsubsection{Blackhole attack}
+\label{subsubsec:blackhole_implementation}
+We implemented the Blackhole attack at the IPv6 forwarding layer in \texttt{os/net/ipv6/uip6.c}.
+The attack is enabled through a compile-time configuration and is associated with a specific simulated mote (as for the \hyperref[subsubsec:sinkhole_implementation]{Sinkhole attack}):
+
+\begin{verbatim}
+#define BLACKHOLE_ID 5
+#define B_ATTACK_ACTIVE 1
+\end{verbatim}
+
+When the malicious mote forwards a packet, we inspect the actual transport protocol.
+This also accounts for \gls{ipv6} packets containing a Hop-by-Hop extension header:
+
+\begin{verbatim}
+if(B_ATTACK_ACTIVE && simMoteID == BLACKHOLE_ID) {
+  uint8_t real_proto = UIP_IP_BUF->proto;
+  if(real_proto == UIP_PROTO_HBHO) {
+    struct uip_ext_hdr *ext_hdr;
+    ext_hdr = (struct uip_ext_hdr *)
+      ((uint8_t *)UIP_IP_BUF + UIP_IPH_LEN);
+    real_proto = ext_hdr->next;
+  }
+  if(real_proto == UIP_PROTO_UDP) {
+    LOG_INFO("BLACKHOLE DROP UDP forwarding\n");
+    goto drop;
+  }
+}
+\end{verbatim}
+
+The check was inserted in the \gls{ipv6} forwarding path, before the packet is sent to the next hop.
+Consequently, \gls{udp} packets that reach the malicious node for forwarding are discarded, while the node can continue to participate in \gls{rpl} and generate its own traffic.
+
+We also added a dedicated \texttt{blackhole.c} application for the malicious mote.
+Its main purpose is to initialize the node and its participation in the routing stack:
+
+\begin{verbatim}
+PROCESS(blackhole_process, "Blackhole node");
+AUTOSTART_PROCESSES(&blackhole_process);
+PROCESS_THREAD(blackhole_process, ev, data)
+{
+  PROCESS_BEGIN();
+  LOG_INFO("Blackhole started\n");
+  NETSTACK_ROUTING.init();
+  while(1) {
+    PROCESS_WAIT_EVENT();
+  }
+  PROCESS_END();
+}
+\end{verbatim}
+
+The attack-specific forwarding behavior therefore remains in the \gls{ipv6} stack, rather than being implemented as an application-level packet drop.
+
+In addition to the standard Blackhole behavior described above, we also implemented an \textit{Aggressive Blackhole} variant in \texttt{os/net/ipv6/tcpip.c}.
+This variant modifies the forwarding behavior more aggressively in order to discard every packet reaching the compromised node.
+The implementation was retained as an additional attack configuration, but it was not evaluated in the experimental scenarios reported in this work because it is less realistic and more easily detectable than the standard Blackhole attack, since it will break the \gls{dodag} construction and prevent the malicious node from participating in the routing process.
+
+\subsubsection{Sinkhole attack}\
+\label{subsubsec:sinkhole_implementation}\
+We implemented the Sinkhole attack by modifying the \gls{rpl} \gls{dio} generation mechanism in
+
+\texttt{os/net/routing/rpl-lite/rpl-icmp6.c}.\
+Normally, the advertised Rank corresponds to the node's actual Rank:
+
+\begin{verbatim}
+uint16_t advertised_rank = curr_instance.dag.rank;
+\end{verbatim}
+
+For the malicious node, the attack is activated by replacing the advertised Rank with
+\texttt{ROOT\_RANK}:
+
+\begin{verbatim}
+if(simMoteID == SINKHOLE_ID &&
+   curr_instance.dag.rank != ROOT_RANK /*&&
+   curr_instance.dag.rank != RPL_INFINITE_RANK*/) {
+  advertised_rank = ROOT_RANK /*+
+                    curr_instance.min_hoprankinc*/;
+  LOG_INFO("SINKHOLE ACTIVE fake_rank=%u "
+           "real_rank=%u\n",
+           advertised_rank,
+           curr_instance.dag.rank);
+}
+\end{verbatim}
+
+The commented conditions represent the behavior that would be preferable for a stealthier attack.
+In particular, excluding \texttt{RPL\_INFINITE\_RANK} would prevent the attack from becoming active while the \gls{dodag} is still being constructed, when the node has not yet selected a valid parent.
+Similarly, adding
+
+\texttt{curr\_instance.min\_hoprankinc} to the advertised Rank would avoid advertising exactly the root Rank while still providing an artificially attractive routing metric.
+
+For the experiments, however, these conditions and the Rank increment were left commented out.
+This makes the Sinkhole behavior more pronounced and therefore easier to observe and analyze in the simulation logs.
+
+The malicious node therefore advertises a Rank corresponding to the root while maintaining its actual Rank internally.
+This directly affects the routing information received by neighboring nodes through \gls{dio} messages.
+
+We also modified the Metric Container of the \gls{dio}.
+When \gls{mrhof} uses \gls{etx}, the Sinkhole advertises a fixed \gls{etx} value corresponding to 1.0 instead of its actual path metric:
+
+\begin{verbatim}
+uint16_t fake_etx = curr_instance.mc.obj.etx;
+if(S_ATTACK_ACTIVE &&
+   simMoteID == SINKHOLE_ID) {
+  fake_etx = 128;
+  LOG_INFO("SINKHOLE: advertising fake ETX %u "
+           "(real %u)\n",
+           fake_etx,
+           curr_instance.mc.obj.etx);
+}
+\end{verbatim}
+
+The two manipulated values, Rank and \gls{etx}, are therefore inserted directly
+into the \gls{rpl} control information advertised by the malicious node.
+
+\subsubsection{MRHOF path-cost modification}
+\label{subsubsec:mrhof_implementation}
+Since the experiments use the \gls{mrhof}, we also modified its path-cost calculation in
+
+\texttt{os/net/routing/rpl-lite/rpl-mrhof.c}.
+
+We introduced a configurable multiplier for the link metric:
+
+\begin{verbatim}
+#define LINK_METRIC_MULTIPLIER 0
+\end{verbatim}
+
+The original path-cost calculation was modified as follows:
+
+\begin{verbatim}
+return MIN((uint32_t)base +
+           link_metric_to_rank(nbr_link_metric(nbr))
+           * LINK_METRIC_MULTIPLIER,
+           0xffff);
+\end{verbatim}
+
+With the multiplier set to zero, the link-metric contribution is removed from the resulting path cost:
+
+\begin{equation}
+C_{\mathrm{path}} = R_{\mathrm{parent}}
+\end{equation}
+
+This configuration allowed us to isolate the effect of the Rank advertised by the Sinkhole and reduce the influence of link-quality variations during the experiments.
+
+\subsubsection{Build and logging configuration}
+\label{subsubsec:build_configuration}
+
+We modified the \texttt{examples/rpl-udp/Makefile} to include the dedicated Blackhole node and to enable the logging required during the experiments:
+
+\begin{verbatim}
+CONTIKI_PROJECT = udp-client udp-server blackhole
+all: $(CONTIKI_PROJECT)
+CONTIKI=../..
+CFLAGS += -DLOG_CONF_LEVEL_RPL=LOG_LEVEL_DBG
+CFLAGS += -DBLACKHOLE_NODE
+include $(CONTIKI)/Makefile.include
+\end{verbatim}
+
+We also enabled debug-level logging in the modified source files.
+This provided the \gls{rpl} and forwarding information required to reconstruct the routing behavior from the simulation logs.
