@@ -3,13 +3,13 @@
 
 This section introduces the concepts required to understand the experimental work.
 
-\subsection{The RPL Routing Protocol}
+\subsection{The RPL routing protocol}
 \label{subsec:rpl_protocol}
 
 The \gls{rpl} is a distance-vector routing protocol designed for resource-constrained \glspl{lln}. 
 \gls{rpl} organizes nodes into a \gls{dodag}, whose topology is rooted at a node providing connectivity towards an external network.
 
-\subsubsection{DODAG Construction and Topology Management}
+\subsubsection{DODAG construction and topology management}
 
 Each node in a \gls{dodag} is assigned a \textit{Rank}, which represents its position relative to the root. 
 The root has the lowest Rank, while nodes farther from the root generally have higher Rank values. 
@@ -26,7 +26,7 @@ Two \glspl{of} commonly associated with \gls{rpl} are:
 In the RPL implementation considered in this work, \gls{mrhof} is used for parent selection. 
 The advertised Rank of a neighbor therefore represents an important component of the routing cost considered when evaluating potential parents.
 
-\subsubsection{RPL Control Messages}
+\subsubsection{RPL control messages}
 
 \gls{rpl} uses \gls{icmpv6} control messages to construct and maintain the \gls{dodag}:
 
@@ -42,18 +42,18 @@ The advertised Rank of a neighbor therefore represents an important component of
 
 Among these messages, the \gls{dio} is particularly relevant to the attacks considered in this work, since it contains the Rank advertised by a node and is therefore involved in parent selection.
 
-\subsection{Routing Attacks in RPL Networks}
+\subsection{Routing attacks in RPL networks}
 \label{subsec:routing_attacks}
 The distributed nature of \gls{rpl} allows a compromised internal node to participate in the routing protocol while providing malicious routing information. 
 Two routing attacks are considered in this project: Blackhole and Sinkhole.
 
-\subsubsection{Blackhole Attack}
+\subsubsection{Blackhole attack}
 A Blackhole attack consists of a compromised routing node that discards packets that it is expected to forward instead of delivering them towards their destination. 
 The malicious node may continue to participate normally in \gls{rpl} topology formation, while disrupting data traffic that is routed through it.
 
 The attack primarily affects packet forwarding and can therefore result in packet loss and reduced network delivery performance.
 
-\subsubsection{Sinkhole Attack}
+\subsubsection{Sinkhole attack}
 A Sinkhole attack attempts to attract network traffic by making a compromised node appear to provide a highly favorable route towards the \gls{dodag} root. 
 In \gls{rpl}, this can be achieved by manipulating the Rank advertised in \gls{dio} messages.
 
@@ -65,7 +65,7 @@ In particular, the hysteresis mechanism of \gls{mrhof} can delay parent changes 
 
 A Sinkhole attack can also be combined with a Blackhole attack, where the Sinkhole redirects traffic towards the compromised node and the Blackhole subsequently discards it.
 
-\subsection{Intrusion Detection Systems (IDS) in IoT}
+\subsection{IDS in IoT}
 \label{subsec:ids_background}
 \gls{ids} provide an additional layer of defense by monitoring network activity and identifying behavior that deviates from expected protocol operation.
 
