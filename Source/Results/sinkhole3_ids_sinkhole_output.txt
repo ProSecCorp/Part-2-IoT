@@ -1,0 +1,70 @@
+========== RPL IDS ANALYSIS ==========
+
+Known node ranks:
+Node 1: rank=128
+Node 2: rank=256
+Node 3: rank=512
+Node 4: rank=384
+Node 5: rank=640
+Node 6: rank=128
+Node 7: rank=512
+Node 8: rank=256
+Node 9: rank=384
+Node 10: rank=384
+Node 11: rank=512
+Node 12: rank=384
+
+Observed parents:
+Node 2 -> parent 6
+Node 3 -> parent 4
+Node 4 -> parent 8
+Node 5 -> parent 11
+Node 6 -> parent 1
+Node 7 -> parent 10
+Node 8 -> parent 6
+Node 9 -> parent 8
+Node 10 -> parent 2
+Node 11 -> parent 12
+Node 12 -> parent 2
+
+---------- Rank consistency ----------
+Node 2: parent=6 parent_rank=128 node_rank=256
+Node 3: parent=4 parent_rank=384 node_rank=512
+Node 4: parent=8 parent_rank=256 node_rank=384
+Node 5: parent=11 parent_rank=512 node_rank=640
+Node 6: parent=1 parent_rank=128 node_rank=128
+  [ALERT] invalid rank relation 6->1
+Node 7: parent=10 parent_rank=384 node_rank=512
+Node 8: parent=6 parent_rank=128 node_rank=256
+Node 9: parent=8 parent_rank=256 node_rank=384
+Node 10: parent=2 parent_rank=256 node_rank=384
+Node 11: parent=12 parent_rank=384 node_rank=512
+Node 12: parent=2 parent_rank=256 node_rank=384
+
+---------- Rank anomaly detection ----------
+Node 2: rank changed 65535 -> 256 at 38.409s
+  [ALERT] suspicious rank decrease
+Node 3: rank changed 65535 -> 512 at 74.022s
+  [ALERT] suspicious rank decrease
+Node 4: rank changed 65535 -> 384 at 59.023s
+  [ALERT] suspicious rank decrease
+Node 5: rank changed 65535 -> 640 at 75.780s
+  [ALERT] suspicious rank decrease
+Node 7: rank changed 65535 -> 512 at 70.257s
+  [ALERT] suspicious rank decrease
+Node 8: rank changed 65535 -> 256 at 38.689s
+  [ALERT] suspicious rank decrease
+Node 9: rank changed 65535 -> 384 at 56.775s
+  [ALERT] suspicious rank decrease
+Node 10: rank changed 65535 -> 384 at 52.393s
+  [ALERT] suspicious rank decrease
+Node 11: rank changed 65535 -> 512 at 61.856s
+  [ALERT] suspicious rank decrease
+Node 12: rank changed 65535 -> 384 at 47.907s
+  [ALERT] suspicious rank decrease
+
+[ALERT] Possible RPL rank attack detected
+Rank inconsistencies (C-ID, C-rank, P-ID, P-rank): [(6, 128, 1, 128)]
+Suspicious rank changes (IDs): {2, 3, 4, 5, 7, 8, 9, 10, 11, 12}
+
+CSV saved as ids_sinkhole_results.csv

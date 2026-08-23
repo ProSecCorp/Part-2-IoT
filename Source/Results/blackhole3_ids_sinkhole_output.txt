@@ -1,0 +1,142 @@
+========== RPL IDS ANALYSIS ==========
+
+Known node ranks:
+Node 1: rank=128
+Node 2: rank=527
+Node 3: rank=399
+Node 4: rank=527
+Node 5: rank=271
+Node 6: rank=399
+Node 7: rank=399
+Node 8: rank=529
+Node 9: rank=529
+Node 10: rank=527
+Node 11: rank=541
+Node 12: rank=399
+
+Observed parents:
+Node 2 -> parent 3
+Node 3 -> parent 5
+Node 4 -> parent 3
+Node 5 -> parent 1
+Node 6 -> parent 5
+Node 7 -> parent 5
+Node 8 -> parent 12
+Node 9 -> parent 3
+Node 10 -> parent 3
+Node 11 -> parent 3
+Node 12 -> parent 5
+
+---------- Rank consistency ----------
+Node 2: parent=3 parent_rank=399 node_rank=527
+Node 3: parent=5 parent_rank=271 node_rank=399
+Node 4: parent=3 parent_rank=399 node_rank=527
+Node 5: parent=1 parent_rank=128 node_rank=271
+Node 6: parent=5 parent_rank=271 node_rank=399
+Node 7: parent=5 parent_rank=271 node_rank=399
+Node 8: parent=12 parent_rank=399 node_rank=529
+Node 9: parent=3 parent_rank=399 node_rank=529
+Node 10: parent=3 parent_rank=399 node_rank=527
+Node 11: parent=3 parent_rank=399 node_rank=541
+Node 12: parent=5 parent_rank=271 node_rank=399
+
+---------- Rank anomaly detection ----------
+Node 2: rank changed 65535 -> 603 at 37.844s
+  [ALERT] suspicious rank decrease
+Node 2: rank changed 603 -> 598 at 46.851s
+Node 2: rank changed 598 -> 573 at 61.133s
+Node 2: rank changed 573 -> 565 at 81.152s
+Node 2: rank changed 565 -> 552 at 89.735s
+Node 2: rank changed 552 -> 542 at 134.786s
+Node 2: rank changed 542 -> 538 at 150.011s
+Node 2: rank changed 538 -> 527 at 251.329s
+Node 3: rank changed 65535 -> 491 at 23.635s
+  [ALERT] suspicious rank decrease
+Node 3: rank changed 491 -> 430 at 37.750s
+Node 3: rank changed 430 -> 409 at 55.218s
+Node 3: rank changed 409 -> 399 at 81.508s
+Node 3: rank changed 405 -> 399 at 179.404s
+Node 4: rank changed 65535 -> 636 at 38.820s
+  [ALERT] suspicious rank decrease
+Node 4: rank changed 636 -> 600 at 57.729s
+Node 4: rank changed 600 -> 572 at 87.688s
+Node 4: rank changed 572 -> 563 at 113.283s
+Node 4: rank changed 563 -> 552 at 139.679s
+Node 4: rank changed 552 -> 550 at 172.780s
+Node 4: rank changed 550 -> 533 at 242.171s
+Node 4: rank changed 533 -> 529 at 286.799s
+Node 4: rank changed 529 -> 527 at 300.340s
+Node 5: rank changed 65535 -> 306 at 14.041s
+  [ALERT] suspicious rank decrease
+Node 5: rank changed 306 -> 296 at 22.414s
+Node 5: rank changed 296 -> 275 at 35.621s
+Node 5: rank changed 275 -> 271 at 64.085s
+Node 6: rank changed 65535 -> 473 at 29.172s
+  [ALERT] suspicious rank decrease
+Node 6: rank changed 473 -> 447 at 36.177s
+Node 6: rank changed 447 -> 438 at 50.644s
+Node 6: rank changed 438 -> 423 at 81.644s
+Node 6: rank changed 423 -> 415 at 110.346s
+Node 6: rank changed 415 -> 408 at 150.204s
+Node 6: rank changed 408 -> 402 at 213.458s
+Node 6: rank changed 402 -> 399 at 241.189s
+Node 7: rank changed 65535 -> 470 at 31.048s
+  [ALERT] suspicious rank decrease
+Node 7: rank changed 470 -> 444 at 39.109s
+Node 7: rank changed 444 -> 439 at 52.301s
+Node 7: rank changed 439 -> 421 at 87.607s
+Node 7: rank changed 421 -> 418 at 99.845s
+Node 7: rank changed 418 -> 408 at 149.665s
+Node 7: rank changed 408 -> 407 at 152.829s
+Node 7: rank changed 407 -> 400 at 225.906s
+Node 7: rank changed 400 -> 399 at 248.265s
+Node 8: rank changed 65535 -> 651 at 36.348s
+  [ALERT] suspicious rank decrease
+Node 8: rank changed 651 -> 614 at 44.157s
+Node 8: rank changed 614 -> 605 at 54.661s
+Node 8: rank changed 605 -> 573 at 80.035s
+Node 8: rank changed 573 -> 570 at 91.242s
+Node 8: rank changed 570 -> 540 at 145.205s
+Node 8: rank changed 544 -> 536 at 243.863s
+Node 8: rank changed 536 -> 529 at 292.555s
+Node 9: rank changed 65535 -> 680 at 36.792s
+  [ALERT] suspicious rank decrease
+Node 9: rank changed 680 -> 612 at 43.025s
+Node 9: rank changed 612 -> 585 at 57.627s
+Node 9: rank changed 585 -> 561 at 84.451s
+Node 9: rank changed 561 -> 551 at 117.626s
+Node 9: rank changed 559 -> 556 at 164.876s
+Node 9: rank changed 556 -> 537 at 223.471s
+Node 9: rank changed 537 -> 534 at 257.592s
+Node 9: rank changed 534 -> 529 at 299.105s
+Node 10: rank changed 65535 -> 608 at 40.463s
+  [ALERT] suspicious rank decrease
+Node 10: rank changed 608 -> 577 at 63.038s
+Node 10: rank changed 577 -> 559 at 83.231s
+Node 10: rank changed 559 -> 549 at 119.654s
+Node 10: rank changed 549 -> 542 at 149.026s
+Node 10: rank changed 542 -> 531 at 227.454s
+Node 10: rank changed 531 -> 528 at 256.412s
+Node 10: rank changed 528 -> 527 at 310.454s
+Node 11: rank changed 65535 -> 637 at 38.140s
+  [ALERT] suspicious rank decrease
+Node 11: rank changed 637 -> 629 at 46.734s
+Node 11: rank changed 629 -> 600 at 59.322s
+Node 11: rank changed 600 -> 567 at 97.076s
+Node 11: rank changed 567 -> 555 at 123.547s
+Node 11: rank changed 555 -> 552 at 134.369s
+Node 11: rank changed 558 -> 547 at 244.168s
+Node 11: rank changed 547 -> 541 at 284.411s
+Node 12: rank changed 65535 -> 484 at 25.046s
+  [ALERT] suspicious rank decrease
+Node 12: rank changed 484 -> 478 at 31.484s
+Node 12: rank changed 478 -> 441 at 43.580s
+Node 12: rank changed 441 -> 417 at 72.364s
+Node 12: rank changed 417 -> 405 at 113.397s
+Node 12: rank changed 405 -> 401 at 132.704s
+Node 12: rank changed 415 -> 399 at 247.832s
+
+[ALERT] Possible RPL rank attack detected
+Suspicious rank changes (IDs): {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+CSV saved as ids_sinkhole_results.csv
