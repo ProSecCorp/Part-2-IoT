@@ -195,7 +195,7 @@ We developed two lightweight, centralized IDSs in Python, operating on the execu
 The two \glspl{ids} target the different characteristics of the attacks considered in this work.
 
 \subsubsection{Blackhole IDS}
-The Blackhole \gls{ids}, implemented in \texttt{Source/IDS/IDS-blackhole.py}, monitors packet forwarding activity.
+The Blackhole \gls{ids}, implemented in \texttt{Source/IDSs/IDS-blackhole.py}, monitors packet forwarding activity.
 It counts packets received for forwarding and packets subsequently forwarded by each node:
 
 \begin{verbatim}
@@ -208,7 +208,7 @@ A node is flagged when it receives more than five packets and forwards less than
 The \gls{ids} also computes \gls{pdr}, end-to-end delay, and throughput and stores the results in \texttt{ids\_blackhole\_results.csv}.
 
 \subsubsection{Sinkhole IDS}
-The Sinkhole \gls{ids}, implemented in \texttt{Source/IDS/IDS-sinkhole.py}, reconstructs the \gls{rpl} topology from \gls{dio} and \gls{dao} messages by extracting node Ranks and observed parent relationships.
+The Sinkhole \gls{ids}, implemented in \texttt{Source/IDSs/IDS-sinkhole.py}, reconstructs the \gls{rpl} topology from \gls{dio} and \gls{dao} messages by extracting node Ranks and observed parent relationships.
 
 The main detection rule checks the consistency between a node and its parent:
 
