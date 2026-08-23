@@ -1,0 +1,22 @@
+========== RESULTS ==========
+Packets generated      : 644
+Packets reached sink   : 319
+Packets delivered      : 319
+
+PDR routing            : 0.4953
+PDR end-to-end         : 0.4953
+
+Average delay (s)      : 0.068712
+Minimum delay (s)      : 0.011000
+Maximum delay (s)      : 0.228000
+
+Throughput             : 0.486 pkt/s
+
+========== IDS ANALYSIS ==========
+Node 5: received=339 forwarded=368 ratio=1.09
+Node 6: received=140 forwarded=225 ratio=1.61
+Node 8: received=124 forwarded=206 ratio=1.66
+
+No malicious behaviour detected
+
+CSV saved as ids_blackhole_results.csv
